@@ -1,0 +1,28 @@
+Collecting pdfplumber
+  Using cached pdfplumber-0.11.8-py3-none-any.whl.metadata (43 kB)
+Collecting pdfminer.six==20251107 (from pdfplumber)
+  Downloading pdfminer_six-20251107-py3-none-any.whl.metadata (4.2 kB)
+Collecting Pillow>=9.1 (from pdfplumber)
+  Using cached pillow-12.0.0-cp313-cp313-win_amd64.whl.metadata (9.0 kB)
+Collecting pypdfium2>=4.18.0 (from pdfplumber)
+  Downloading pypdfium2-5.2.0-py3-none-win_amd64.whl.metadata (67 kB)
+Requirement already satisfied: charset-normalizer>=2.0.0 in d:\projects\ai_guruji\backend\venv\lib\site-packages (from pdfminer.six==20251107->pdfplumber) (3.4.4)
+Collecting cryptography>=36.0.0 (from pdfminer.six==20251107->pdfplumber)
+  Downloading cryptography-46.0.3-cp311-abi3-win_amd64.whl.metadata (5.7 kB)
+Collecting cffi>=2.0.0 (from cryptography>=36.0.0->pdfminer.six==20251107->pdfplumber)
+  Using cached cffi-2.0.0-cp313-cp313-win_amd64.whl.metadata (2.6 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography>=36.0.0->pdfminer.six==20251107->pdfplumber)
+  Using cached pycparser-2.23-py3-none-any.whl.metadata (993 bytes)
+Downloading pdfplumber-0.11.8-py3-none-any.whl (60 kB)
+Downloading pdfminer_six-20251107-py3-none-any.whl (5.6 MB)
+   ---------------------------------------- 5.6/5.6 MB 42.7 MB/s  0:00:00
+Downloading cryptography-46.0.3-cp311-abi3-win_amd64.whl (3.5 MB)
+   ---------------------------------------- 3.5/3.5 MB 54.6 MB/s  0:00:00
+Using cached cffi-2.0.0-cp313-cp313-win_amd64.whl (183 kB)
+Using cached pillow-12.0.0-cp313-cp313-win_amd64.whl (7.0 MB)
+Downloading pypdfium2-5.2.0-py3-none-win_amd64.whl (3.1 MB)
+   ---------------------------------------- 3.1/3.1 MB 49.0 MB/s  0:00:00
+Using cached pycparser-2.23-py3-none-any.whl (118 kB)
+Installing collected packages: pypdfium2, pycparser, Pillow, cffi, cryptography, pdfminer.six, pdfplumber
+
+Successfully installed Pillow-12.0.0 cffi-2.0.0 cryptography-46.0.3 pdfminer.six-20251107 pdfplumber-0.11.8 pycparser-2.23 pypdfium2-5.2.0
