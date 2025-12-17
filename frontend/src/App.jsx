@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Upload, FileText, CheckCircle, Loader } from 'lucide-react';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import Player from './components/Player';
+import Show from './components/Show';
 
 function App() {
+    const navigate = useNavigate();
     const [file, setFile] = useState(null);
-    const [viewMode, setViewMode] = useState("upload"); // upload | player
     const [uploadStatus, setUploadStatus] = useState("idle"); // idle, uploading, success, error
     const [ingestionData, setIngestionData] = useState(null);
     const [lectureData, setLectureData] = useState(null);
@@ -51,7 +53,7 @@ function App() {
             console.log("Generation Result:", response.data);
             setLectureData(response.data.pipeline_results);
             setIsGenerating(false);
-            setViewMode('player');
+            navigate('/player');
         } catch (error) {
             console.error("Generation failed:", error);
             setIsGenerating(false);
@@ -59,23 +61,7 @@ function App() {
         }
     };
 
-    if (viewMode === 'player' && lectureData) {
-        return (
-            <div className="min-h-screen bg-[#0f172a] text-white overflow-hidden">
-                <Player
-                    scenes={lectureData}
-                />
-                <button
-                    onClick={() => setViewMode('upload')}
-                    className="absolute top-6 left-6 text-slate-500 hover:text-white transition-colors z-50 font-semibold"
-                >
-                    &larr; Back to Upload
-                </button>
-            </div>
-        );
-    }
-
-    return (
+    const UploadRoute = (
         <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
             <div className="w-full max-w-2xl bg-white/10 backdrop-blur-lg rounded-2xl p-10 shadow-2xl border border-white/20">
                 <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 mb-6 text-center">
@@ -156,7 +142,44 @@ function App() {
                 </div>
             </div>
         </div>
-    )
+    );
+
+    const PlayerRoute = lectureData ? (
+        <div className="min-h-screen bg-[#0f172a] text-white overflow-hidden">
+            <Player scenes={lectureData} />
+            <button
+                onClick={() => navigate('/upload')}
+                className="absolute top-6 left-6 text-slate-500 hover:text-white transition-colors z-50 font-semibold"
+            >
+                &larr; Back to Upload
+            </button>
+        </div>
+    ) : (
+        <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-[#0f172a] text-white">
+            <div className="w-full max-w-xl bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-md">
+                <h2 className="text-2xl font-semibold mb-2">No lecture generated yet</h2>
+                <p className="text-slate-300 mb-6">
+                    Go to Upload, ingest a PDF, then generate a lecture to play it here.
+                </p>
+                <button
+                    onClick={() => navigate('/upload')}
+                    className="py-3 px-5 rounded-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 transition-all"
+                >
+                    Go to Upload
+                </button>
+            </div>
+        </div>
+    );
+
+    return (
+        <Routes>
+            <Route path="/" element={<Navigate to="/upload" replace />} />
+            <Route path="/upload" element={UploadRoute} />
+            <Route path="/player" element={PlayerRoute} />
+            <Route path="/show" element={<Show />} />
+            <Route path="*" element={<Navigate to="/upload" replace />} />
+        </Routes>
+    );
 }
 
 export default App
