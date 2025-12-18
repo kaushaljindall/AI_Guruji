@@ -14,10 +14,34 @@ except ImportError:
 
 class LLMService:
     def __init__(self):
-        load_dotenv()
-        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
-        self.openai_api_key = os.getenv("OPENAI_API_KEY")
+        # --- HARDCODE SECTION ---
+        # Paste your key inside the quotes below to bypass .env issues
+        self.HARDCODED_GEMINI_KEY = "AIzaSyBORttkR7uhn1QaN8SSZ900DtxI2tD6-ag" # e.g. "AIzaSy..."
         
+        # 1. Explicitly load .env from backend root
+        from pathlib import Path
+        env_path = Path(os.getcwd()) / '.env'
+        load_dotenv(dotenv_path=env_path)
+        
+        # 2. Load Keys (Prioritize Hardcoded if set)
+        self.gemini_api_key = self.HARDCODED_GEMINI_KEY or os.getenv("GEMINI_API_KEY")
+        self.openai_api_key = os.getenv("OPENAI_API_KEY")
+
+        # --- DEBUGGING BLOCK ---
+        print("--- KEY DIAGNOSTICS ---")
+        if not self.gemini_api_key:
+             print("❌ GEMINI_API_KEY is Missing/None")
+        else:
+             masked_key = self.gemini_api_key[:6] + "..." if len(self.gemini_api_key) > 6 else "***"
+             print(f"✅ GEMINI_API_KEY Loaded: {masked_key}")
+             
+        if not self.openai_api_key:
+             print("⚠️ OPENAI_API_KEY is Missing/None (Fallback Disabled)")
+        else:
+             masked_key = self.openai_api_key[:6] + "..." if len(self.openai_api_key) > 6 else "***"
+             print(f"✅ OPENAI_API_KEY Loaded: {masked_key}")
+        print("-----------------------")
+
         self.providers = []
         
         # 1. Initialize OpenAI (Primary for now if key exists, or Fallback)
@@ -54,7 +78,7 @@ class LLMService:
 
     def generate_lecture_content(self, system_prompt: str, user_context: str) -> dict:
         """
-        Generates lecture content trying providers in sequence (Gemini -> OpenAI).
+        Generates lecture content trying providers in sequence (OpenAI -> Gemini).
         Returns STRICT JSON.
         """
         full_prompt = (
@@ -83,7 +107,7 @@ class LLMService:
             print(f"🔄 Generating with {provider.upper()}...")
             try:
                 if provider == "gemini":
-                    return self._generate_gemini(full_prompt)
+                    return self._generate_gemini_robust(full_prompt)
                 elif provider == "openai":
                     return self._generate_openai(full_prompt)
             except Exception as e:
@@ -96,13 +120,38 @@ class LLMService:
         print(f"❌ All LLM providers failed. Errors: {errors}")
         raise Exception(f"All LLM providers failed: {errors}")
 
-    def _generate_gemini(self, prompt: str) -> dict:
-        response = self.gemini_model.generate_content(prompt)
-        if not response.text:
-            raise ValueError("Empty response from Gemini")
-        return self._clean_and_parse_json(response.text)
+    def _generate_gemini_robust(self, prompt: str) -> dict:
+        """
+        Tries multiple Gemini models in sequence to handle 404/Deprecation errors.
+        """
+        # PRIORITIZE AVAILABLE MODELS (Based on check_models.py output)
+        candidate_models = [
+            'gemini-2.5-flash', 
+            'gemini-2.0-flash',
+            'gemini-flash-latest' # Fallback alias
+        ]
+        last_error = None
+        
+        for model_name in candidate_models:
+            try:
+                # print(f"   👉 Trying Gemini Model: {model_name}...")
+                model = genai.GenerativeModel(model_name)
+                response = model.generate_content(prompt)
+                
+                if not response.text:
+                    raise ValueError("Empty response from Gemini")
+                    
+                return self._clean_and_parse_json(response.text)
+                
+            except Exception as e:
+                # print(f"   ⚠️ {model_name} failed: {e}")
+                last_error = e
+                continue # Try next model
+        
+        raise last_error
 
     def _generate_openai(self, prompt: str) -> dict:
+        # Simplified Client usage
         response = self.openai_client.chat.completions.create(
             model="gpt-4o", # Or gpt-3.5-turbo depending on budget/availability
             messages=[
