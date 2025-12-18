@@ -37,12 +37,12 @@ TTS:
   → Must produce clear, calm, natural teacher voice
 
 Slides:
-- Python-PPTX OR
-- HTML → Image (Playwright)
+- Python-PPTX (Strictly)
+- Pillow (for video slide images)
 - Pygments (code highlighting)
 
 Avatar:
-- Wav2Lip (audio-driven lip sync)
+- Eunoic (AI avatar system)
 
 ====================================================
 STRICT RULES
@@ -80,7 +80,7 @@ REQUIREMENTS:
   1) Slide content (for PPT download)
   2) Spoken teaching script (for TTS + avatar)
 - Content must be suitable for:
-  - PPT generation
+  - PPT generation (Title, Summary, Points, Optional Code)
   - Natural Text-to-Speech
   - Avatar lip-sync
 - Slides appear on the LEFT

@@ -1,2 +1,0 @@
-Requirement already satisfied: scipy in d:\projects\ai_guruji\backend\venv\lib\site-packages (1.16.3)
-Requirement already satisfied: numpy<2.6,>=1.25.2 in d:\projects\ai_guruji\backend\venv\lib\site-packages (from scipy) (2.3.5)

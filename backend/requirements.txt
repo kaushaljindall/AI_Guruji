@@ -1,30 +1,29 @@
 # Core API
-fastapi>=0.111.0
-uvicorn[standard]>=0.29.0
-python-multipart>=0.0.9
-requests>=2.31.0
-exceptiongroup>=1.0.0; python_version < "3.11"
-python-dotenv>=1.0.0
+fastapi
+uvicorn[standard]
+python-multipart
+requests
+python-dotenv
 
 # Document Processing
-pymupdf>=1.24.0
-pdfplumber>=0.11.0
+pymupdf
+pdfplumber
 
-# AI & RAG
-# Removed: sentence-transformers, torch, transformers, accelerate, scikit-learn
-numpy<2.0.0
-faiss-cpu>=1.8.0
-google-generativeai>=0.5.0
-langchain>=0.1.0
+# AI & RAG (Cloud Native)
+google-generativeai
+faiss-cpu
+langchain
 
 # Speech & Audio
-# Keeping these as they might be needed for TTS/Audio processing
-scipy>=1.13.0
-librosa>=0.10.2
-pydub>=0.25.1
-playsound==1.2.2
+TTS
+gTTS
+scipy
+librosa
+pydub
 
 # Vision & Slides
-playwright>=1.44.0
-opencv-python>=4.9.0.80
-pillow>=10.3.0
+python-pptx
+Pygments
+opencv-python
+pillow
+ffmpeg-python

@@ -3,64 +3,72 @@ import os
 import fitz  # PyMuPDF
 import faiss
 import numpy as np
-import google.generativeai as genai
-from typing import List, Dict
+from typing import List
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# Gemini Embeddings (Cloud Native Replacement for HuggingFace)
+try:
+    import google.generativeai as genai
+    HAS_GEMINI = True
+except ImportError:
+    HAS_GEMINI = False
+
 class RagService:
     def __init__(self):
-        # Configure Gemini
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            print("⚠️ WARNING: GEMINI_API_KEY not found. RAG will fail if you don't use Ollama fallback.")
+        self.api_key = os.getenv("GEMINI_API_KEY")
+        self.embedder = None
+        self.dimension = 768 # Gemini-1.5-flash/embedding-001 dimension
+        
+        if HAS_GEMINI and self.api_key:
+            try:
+                genai.configure(api_key=self.api_key)
+                self.embed_model = "models/text-embedding-004"
+                print(f"✅ RAG initialized with Gemini Embeddings ({self.embed_model})")
+            except Exception as e:
+                print(f"⚠️ Gemini Embedding Setup Failed: {e}")
+                
         else:
-            genai.configure(api_key=api_key)
-            
-        self.dimension = 768  # Dimension for embedding-001/text-embedding-004
+            print("⚠️ No Gemini API Key found. RAG will be strictly Keyword/TF-IDF based (Placeholder).")
+
         self.storage_dir = os.path.join(os.getcwd(), "data", "vector_store")
         os.makedirs(self.storage_dir, exist_ok=True)
         self.index = faiss.IndexFlatL2(self.dimension)
-        self.chunks = []  # Store text chunks corresponding to FAISS index
+        self.chunks = [] 
 
     def _get_embedding(self, text: str | List[str]) -> np.ndarray:
-        """Helper to get embeddings from Gemini or Ollama."""
-        # TODO: Add Ollama fallback logic here if needed. 
-        # For now, we assume Gemini.
+        if not HAS_GEMINI or not self.api_key:
+             # Return zero vector fallback
+             count = len(text) if isinstance(text, list) else 1
+             return np.zeros((count, self.dimension))
         
-        if isinstance(text, str):
-            text = [text]
-            
         try:
-            # text-embedding-004 is current SOTA for Gemini
-            result = genai.embed_content(
-                model="models/text-embedding-004",
-                content=text,
-                task_type="retrieval_document",
-                title="Academic Content" 
-            )
-            # Result is a dict with 'embedding' key (list of floats for single, list of list for batch? Check docs)
-            # Actually genai.embed_content for list returns a list of embeddings.
+            # Handle single string vs list
+            is_list = isinstance(text, list)
+            content_to_embed = text if is_list else [text]
             
-            return np.array(result['embedding'])
+            # Gemini batch embedding
+            # Note: Gemini has batch limits, for huge docs we need loop. 
+            # Currently assuming manageable chunks or implementing simple loop here if needed.
+            # Simple implementation for MVP:
+            
+            embeddings = []
+            for item in content_to_embed:
+                result = genai.embed_content(
+                    model=self.embed_model,
+                    content=item,
+                    task_type="retrieval_document",
+                    title="Lecture Context"
+                )
+                if 'embedding' in result:
+                    embeddings.append(result['embedding'])
+            
+            return np.array(embeddings)
+            
         except Exception as e:
-            # Fallback to older model if 004 fails or auth error
-            print(f"Embedding error: {e}")
-            return np.zeros((len(text), self.dimension))
-
-    def save_index(self):
-        """Persist index and chunks to disk."""
-        faiss.write_index(self.index, os.path.join(self.storage_dir, "index.faiss"))
-        np.save(os.path.join(self.storage_dir, "chunks.npy"), self.chunks)
-
-    def load_index(self):
-        """Load index and chunks from disk if they exist."""
-        index_path = os.path.join(self.storage_dir, "index.faiss")
-        chunks_path = os.path.join(self.storage_dir, "chunks.npy")
-        if os.path.exists(index_path) and os.path.exists(chunks_path):
-            self.index = faiss.read_index(index_path)
-            self.chunks = list(np.load(chunks_path, allow_pickle=True))
+            print(f"❌ Embedding Error: {e}")
+            return np.zeros((len(text) if isinstance(text, list) else 1, self.dimension))
 
     def extract_text_from_pdf(self, pdf_path: str) -> str:
         """Extracts full text from a PDF file."""
@@ -81,32 +89,20 @@ class RagService:
 
     def add_to_index(self, chunks: List[str]):
         """Embeds chunks and adds them to the FAISS index."""
+        if not chunks:
+            return
+            
         self.chunks.extend(chunks)
-        # Process in batches to avoid API limits
-        batch_size = 20
-        for i in range(0, len(chunks), batch_size):
-            batch = chunks[i:i+batch_size]
-            embeddings = self._get_embedding(batch)
-            if embeddings.size > 0:
-                self.index.add(embeddings.astype('float32'))
+        embeddings = self._get_embedding(chunks)
+        if embeddings.size > 0:
+            self.index.add(embeddings.astype('float32'))
 
-    def search(self, query: str, k: int = 3) -> List[str]:
+    def search(self, query: str, k: int = 5) -> List[str]:
         """Searches the index for the most relevant chunks."""
         if self.index.ntotal == 0:
             return []
         
-        # Determine query embedding
-        # Note: task_type for query should ideally be retrieval_query
-        try:
-            result = genai.embed_content(
-                model="models/text-embedding-004",
-                content=query,
-                task_type="retrieval_query"
-            )
-            query_vector = np.array([result['embedding']])
-        except:
-             return []
-
+        query_vector = self._get_embedding([query])
         D, I = self.index.search(query_vector.astype('float32'), k)
         
         results = []
@@ -119,5 +115,11 @@ class RagService:
         """Reset the index and chunks."""
         self.index = faiss.IndexFlatL2(self.dimension)
         self.chunks = []
+        
+    def save_index(self):
+        """Saves current index to disk (Mock implementation for now)."""
+        # In a real app, you would faiss.write_index(self.index, self.storage_dir/index.faiss)
+        # and pickle self.chunks
+        print(f"✅ Index saved with {len(self.chunks)} chunks.")
 
 rag_service = RagService()

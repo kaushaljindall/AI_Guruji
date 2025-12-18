@@ -1,4 +1,0 @@
-Requirement already satisfied: playwright in d:\projects\ai_guruji\backend\venv\lib\site-packages (1.57.0)
-Requirement already satisfied: pyee<14,>=13 in d:\projects\ai_guruji\backend\venv\lib\site-packages (from playwright) (13.0.0)
-Requirement already satisfied: greenlet<4.0.0,>=3.1.1 in d:\projects\ai_guruji\backend\venv\lib\site-packages (from playwright) (3.3.0)
-Requirement already satisfied: typing-extensions in d:\projects\ai_guruji\backend\venv\lib\site-packages (from pyee<14,>=13->playwright) (4.15.0)

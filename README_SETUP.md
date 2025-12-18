@@ -34,13 +34,23 @@ The backend handles all logic, including PDF parsing, RAG, and image/audio gener
 ```bash
 cd backend
 
-# 1. Install Python Dependencies
+# 1. Create & Activate Virtual Environment (Recommended)
+# Windows:
+python -m venv venv
+venv\Scripts\activate
+
+# Mac/Linux:
+# python3 -m venv venv
+# source venv/bin/activate
+
+# 2. Install Python Dependencies
 pip install -r requirements.txt
 
-# 2. Install Playwright Browsers (Required for slide generation)
-playwright install
 
-# 3. Start the Server
+#if some error occurss - RUN THIS
+d:\Projects\AI_Guruji - Copy\backend\repair_env.bat
+
+# 2. Start the Server
 uvicorn app.main:app --reload
 ```
 *API Docs will be available at http://localhost:8000/docs*

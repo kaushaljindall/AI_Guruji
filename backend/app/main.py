@@ -1,10 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from app.api.endpoints import upload, generate
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from app.core.errors import global_exception_handler
 import os
+import shutil
 
 app = FastAPI(title="AI Guruji Backend", version="1.0.0")
+
+# Register Global Exception Handler
+app.add_exception_handler(Exception, global_exception_handler)
 
 # Configure CORS for frontend
 app.add_middleware(
@@ -22,6 +27,21 @@ app.include_router(generate.router, prefix="/api", tags=["Generate"])
 output_dir = os.path.join(os.getcwd(), "data", "outputs")
 os.makedirs(output_dir, exist_ok=True)
 app.mount("/files", StaticFiles(directory=output_dir), name="files")
+
+@app.on_event("startup")
+async def startup_check():
+    """Perform self-checks on startup."""
+    print("🚀 AI Guruji Backend Starting Up...")
+    
+    # Check FFmpeg
+    if not shutil.which("ffmpeg"):
+         print("❌ CRITICAL: FFmpeg not found in PATH. Audio/Video features will fail.")
+    else:
+         print("✅ FFmpeg Check Passed.")
+         
+
+         
+    print("✅ System Ready.")
 
 @app.get("/")
 def read_root():
