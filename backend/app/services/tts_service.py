@@ -24,24 +24,27 @@ class TTSService:
 
     def generate_audio(self, text: str, output_filename: str) -> tuple[str, float]:
         """
-        Generates audio from text using Multi-Provider Strategy:
+        Generates audio Robustly using Multi-Provider Strategy (Cascade):
         1. Coqui TTS (Best Quality, Local)
-        2. gTTS (Google Cloud, Free tier, Reliable)
-        3. Silent (Fallback)
+        2. gTTS (Google Cloud, Free tier, Reliable fallback)
+        3. Silent/Mock (Ultimate failsafe)
+        
+        Guarantees that a file is always returned.
         """
         file_path = os.path.join(self.output_dir, output_filename)
         
-        # Strategy 1: Coqui TTS
+        # --- ATTEMPT 1: Coqui TTS ---
         if self.tts:
             try:
+                # print(f"🎙️ Generating with Coqui TTS for {output_filename}...")
                 self.tts.tts_to_file(text=text, file_path=file_path)
                 return self._get_wav_duration(file_path)
             except Exception as e:
-                print(f"⚠️ Coqui TTS Failed: {e}. Switching to Backup...")
+                print(f"⚠️ Coqui TTS Failed: {e}. Switching to gTTS...")
         
-        # Strategy 2: gTTS (Google Text-to-Speech)
+        # --- ATTEMPT 2: gTTS (Google TTS) ---
         try:
-            print(f"🔄 Attempting gTTS for '{output_filename}'...")
+            # print(f"🎙️ Generating with gTTS for {output_filename}...")
             from gtts import gTTS
             from pydub import AudioSegment
             
@@ -54,7 +57,7 @@ class TTSService:
             sound = AudioSegment.from_mp3(mp3_path)
             sound.export(file_path, format="wav")
             
-            # Allow clean up
+            # Clean up temporary mp3
             if os.path.exists(mp3_path):
                 os.remove(mp3_path)
                 
@@ -63,9 +66,10 @@ class TTSService:
         except Exception as e:
             print(f"⚠️ gTTS Failed: {e}. Switching to Silent Mode...")
 
-        # Strategy 3: Mock Fallback (Silent Audio)
+        # --- ATTEMPT 3: Silent Fallback ---
+        print(f"🔇 Using Silent Fallback for {output_filename}")
         word_count = len(text.split())
-        approx_duration = max(2.0, word_count / 2.3) # Minimum 2 seconds
+        approx_duration = max(2.0, word_count / 2.5) # Approx 2.5 words per sec
         self._create_silent_wav(file_path, duration_sec=approx_duration)
         return file_path, approx_duration
 

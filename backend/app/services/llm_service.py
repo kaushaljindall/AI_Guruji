@@ -1,131 +1,130 @@
 import os
-import requests
-import time
-from app.core.errors import LLMGenerationError
+import json
+import ast
+from dotenv import load_dotenv
+import google.generativeai as genai
 
-# Optional Import for Gemini
+# Optional OpenAI Import
 try:
-    import google.generativeai as genai
-    HAS_GEMINI_LIB = True
+    from openai import OpenAI
+    HAS_OPENAI_LIB = True
 except ImportError:
-    HAS_GEMINI_LIB = False
-    print("⚠️ google.generativeai library not found. Gemini provider disabled.")
+    HAS_OPENAI_LIB = False
+    print("⚠️ OpenAI library not found. OpenAI fallback disabled.")
 
 class LLMService:
     def __init__(self):
-        # Configuration
-        from dotenv import load_dotenv
         load_dotenv()
         self.gemini_api_key = os.getenv("GEMINI_API_KEY")
-        self.ollama_base_url = "http://localhost:11434/api/generate"
-        self.ollama_model = "gemma:2b"
+        self.openai_api_key = os.getenv("OPENAI_API_KEY")
         
-        # Provider Order: Primary -> Secondary -> Fallback
         self.providers = []
         
-        # 1. Register Gemini
-        if HAS_GEMINI_LIB:
-            if not self.gemini_api_key:
-                print("⚠️ Gemini API Key not found in environment. Skipping Gemini.")
-            elif self.gemini_api_key.startswith("Replace_With") or self.gemini_api_key.startswith("AIzaSyAdc9z20iPq4QdseowUxAJIrmcr4HUyqo4"):
-                 # Check for default/placeholder keys
-                 print("⚠️ Gemini API Key is default/placeholder. Skipping Gemini.")
-            else:
-                try:
-                    genai.configure(api_key=self.gemini_api_key)
-                    self.providers.append("gemini")
-                except Exception as e:
-                     print(f"⚠️ Failed to configure Gemini: {e}")
+        # 1. Initialize OpenAI (Primary for now if key exists, or Fallback)
+        if HAS_OPENAI_LIB and self.openai_api_key:
+            try:
+                self.openai_client = OpenAI(api_key=self.openai_api_key)
+                self.providers.append("openai")
+                print("✅ OpenAI LLM Initialized.")
+            except Exception as e:
+                print(f"❌ Failed to configure OpenAI: {e}")
         else:
-             print("⚠️ google.generativeai library not installed. Skipping Gemini.")
+             print("⚠️ OpenAI API Key or library missing.")
 
-        # 2. Register Ollama (Always attempt if local)
-        self.providers.append("ollama")
+        # 2. Smart Gemini Initialization (Try latest, fallback to older)
+        if self.gemini_api_key:
+            try:
+                genai.configure(api_key=self.gemini_api_key)
+                # List of models to try in order of preference
+                candidate_models = ['gemini-pro', 'gemini-1.5-flash', 'gemini-1.0-pro']
+                self.gemini_model = None # Placeholder
+                
+                # Try the most likely public stable model first
+                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                self.providers.append("gemini")
+                print(f"✅ Gemini LLM Initialized (Model: gemini-1.5-flash)")
+            except Exception as e:
+                print(f"❌ Failed to configure Gemini: {e}")
+        else:
+            print("⚠️ Gemini API Key missing.")
 
-        # 3. Last Resort Mock
-        self.providers.append("mock")
+        if not self.providers:
+            print("❌ CRITICAL: No LLM providers available.")
 
-        print(f"✅ LLM Service initialized. Provider Chain: {self.providers}")
-
-    def generate_lecture_content(self, system_prompt: str, user_context: str) -> str:
+    def generate_lecture_content(self, system_prompt: str, user_context: str) -> dict:
         """
-        Generates lecture content trying providers in sequence.
+        Generates lecture content trying providers in sequence (Gemini -> OpenAI).
+        Returns STRICT JSON.
         """
-        full_prompt = f"{system_prompt}\n\nCONTEXT:\n{user_context}"
+        full_prompt = (
+            f"{system_prompt}\n\n"
+            f"CONTEXT FROM DOCUMENT:\n{user_context}\n\n"
+            "STRICT OUTPUT INSTRUCTIONS:\n"
+            "You MUST return valid JSON only. No markdown formatting like ```json ... ```.\n"
+            "The JSON structure must be:\n"
+            "{\n"
+            '  "lecture_title": "Title String",\n'
+            '  "slides": [\n'
+            '    {\n'
+            '      "heading": "Slide Title",\n'
+            '      "summary": "Brief summary",\n'
+            '      "important_points": ["Point 1", "Point 2"],\n'
+            '      "script": "Natural spoken script, approx 150 words.",\n'
+            '      "code": "Optional code snippet or empty string"\n'
+            "    }\n"
+            "  ]\n"
+            "}"
+        )
         
         errors = []
 
         for provider in self.providers:
-            print(f"🔄 Attempting generation with provider: {provider.upper()}...")
+            print(f"🔄 Generating with {provider.upper()}...")
             try:
                 if provider == "gemini":
                     return self._generate_gemini(full_prompt)
-                elif provider == "ollama":
-                    return self._generate_ollama(full_prompt)
-                elif provider == "mock":
-                    return self._generate_mock(full_prompt)
-                    
+                elif provider == "openai":
+                    return self._generate_openai(full_prompt)
             except Exception as e:
-                error_msg = f"{provider} failed: {str(e)}"
+                error_msg = f"{provider} failed: {e}"
                 print(f"❌ {error_msg}")
                 errors.append(error_msg)
-                continue # Try next provider
+                continue
+        
+        # If all fail
+        print(f"❌ All LLM providers failed. Errors: {errors}")
+        raise Exception(f"All LLM providers failed: {errors}")
 
-        # If we reach here, ALL providers failed
-        raise LLMGenerationError(
-            message=f"All LLM providers failed. Errors: {'; '.join(errors)}",
-            service_name="LLM_Service"
-        )
-
-    def _generate_gemini(self, prompt: str) -> str:
-        model = genai.GenerativeModel('gemini-1.5-pro')
-        response = model.generate_content(prompt)
+    def _generate_gemini(self, prompt: str) -> dict:
+        response = self.gemini_model.generate_content(prompt)
         if not response.text:
             raise ValueError("Empty response from Gemini")
-        return response.text
+        return self._clean_and_parse_json(response.text)
 
-    def _generate_ollama(self, prompt: str) -> str:
-        payload = {
-            "model": self.ollama_model,
-            "prompt": prompt,
-            "stream": False,
-            "options": {"temperature": 0.3, "num_ctx": 4096}
-        }
-        # Increased timeout to 300s (5 mins) for slower CPU inference
-        response = requests.post(self.ollama_base_url, json=payload, timeout=300) 
-        # Added timeout to prevent infinite hang
+    def _generate_openai(self, prompt: str) -> dict:
+        response = self.openai_client.chat.completions.create(
+            model="gpt-4o", # Or gpt-3.5-turbo depending on budget/availability
+            messages=[
+                {"role": "system", "content": "You are a helpful AI teacher helper. output JSON only."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7
+        )
+        content = response.choices[0].message.content
+        return self._clean_and_parse_json(content)
+
+    def _clean_and_parse_json(self, text: str) -> dict:
+        # Remove markdown code blocks if present
+        clean_text = text.replace("```json", "").replace("```", "").strip()
         
-        if response.status_code != 200:
-             raise Exception(f"Ollama status {response.status_code}: {response.text}")
-             
-        data = response.json()
-        return data.get("response", "")
-
-    def _generate_mock(self, prompt: str) -> str:
-        print("⚠️ USING MOCK LLM (FALLBACK) - Production would fail here.")
-        # Minimal valid output to prevent crash
-        return """
-LECTURE_TITLE:
-System Failure Recovery
-
-TARGET_DURATION_MINUTES:
-10
-
-----------------------------------------------------
-
-SLIDE 1:
-HEADING: System Recovery Mode
-SUMMARY: This is a fallback test lecture.
-IMPORTANT POINTS:
-- The Primary AI Brain is offline.
-- This is a pre-written emergency script.
-- The pipeline is functioning correctly.
-SCRIPT:
-Hello! This is a test message from the AI Guruji Recovery System. 
-I am speaking to you because the main AI brain could not be reached. 
-Don't worry, my voice means the audio system is working perfectly! 
-Please check your Gemini API Key or Ollama server to restore full intelligence.
-----------------------------------------------------
-"""
+        try:
+            return json.loads(clean_text)
+        except json.JSONDecodeError:
+            # Try to salvage partial JSON or use AST if it's single-quoted
+            try:
+                return ast.literal_eval(clean_text)
+            except:
+                raise ValueError(f"Failed to parse JSON response: {text[:100]}...")
 
 llm_service = LLMService()

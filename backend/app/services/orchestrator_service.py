@@ -6,56 +6,58 @@ import subprocess
 from typing import List, Dict
 
 class OrchestratorService:
-    def parse_llm_output(self, llm_text: str) -> List[Dict]:
+    def parse_llm_output(self, llm_data: dict) -> List[Dict]:
+        """
+        Parses JSON output from LLM Service.
+        """
         scenes = []
-        # Robust regex for finding sections starting with SLIDE X:
-        slide_pattern = re.compile(r"(SLIDE \d+:.*?)(?=(?:SLIDE \d+:)|$)", re.DOTALL)
-        matches = slide_pattern.findall(llm_text)
-
-        for i, content in enumerate(matches):
-            # Extract Scene ID
-            id_match = re.search(r"SLIDE (\d+):", content)
-            scene_id = int(id_match.group(1)) if id_match else i+1
-
-            heading_match = re.search(r"HEADING:\s*(.*)", content)
-            heading = heading_match.group(1).strip() if heading_match else f"Slide {scene_id}"
+        try:
+            # Ensure we have a list of slides
+            slides = llm_data.get("slides", [])
             
-            summary_match = re.search(r"SUMMARY:\s*(.*)", content)
-            summary = summary_match.group(1).strip() if summary_match else ""
-             
-            # Points between IMPORTANT POINTS and SCRIPT
-            points_match = re.search(r"IMPORTANT POINTS:(.*?)(?=SCRIPT:|$)", content, re.DOTALL)
-            points_raw = points_match.group(1).strip() if points_match else ""
-            points = [p.strip().lstrip('-•').strip() for p in points_raw.split('\n') if p.strip()]
+            for i, slide in enumerate(slides):
+                scene_id = i + 1
+                heading = slide.get("heading", f"Slide {scene_id}")
+                summary = slide.get("summary", "")
+                
+                # Handle points (list or string)
+                points_raw = slide.get("important_points", [])
+                if isinstance(points_raw, str):
+                    points = [points_raw]
+                else:
+                    points = points_raw
+                
+                script = slide.get("script", "")
+                code = slide.get("code", "")
+                
+                scenes.append({
+                    "scene_id": scene_id,
+                    "heading": heading,
+                    "summary": summary,
+                    "important_points": points,
+                    "script": script,
+                    "code": code
+                })
             
-            script_match = re.search(r"SCRIPT:\s*(.*)", content, re.DOTALL)
-            script = script_match.group(1).strip() if script_match else ""
+            if not scenes:
+                print("⚠️ No slides found in LLM data.")
+                
+            return scenes
             
-            # Cleanup footer
-            script = script.split("----------------------------------------------------")[0].strip()
-
-            scenes.append({
-                "scene_id": scene_id,
-                "heading": heading,
-                "summary": summary,
-                "important_points": points,
-                "script": script,
-                "code": "" 
-            })
-        return scenes
+        except Exception as e:
+            print(f"Error parsing LLM JSON: {e}")
+            return []
 
     async def execute_pipeline(self, 
-                               llm_text: str, 
+                               llm_data: dict, 
                                slide_service, 
                                tts_service, 
                                avatar_service) -> Dict:
         
-        scenes = self.parse_llm_output(llm_text)
-        lecture_title = "AI_Guruji_Lecture"
-        # Try to find title in first lines
-        title_match = re.search(r"LECTURE_TITLE:\s*(.*)", llm_text)
-        if title_match:
-             lecture_title = title_match.group(1).strip().replace(" ", "_")
+        scenes = self.parse_llm_output(llm_data)
+        
+        # Extract title from JSON
+        lecture_title = llm_data.get("lecture_title", "AI_Guruji_Lecture").replace(" ", "_")
 
         # 1. Generate PPTX (For Download)
         print("Step 1: Generating PPTX...")
