@@ -19,6 +19,9 @@ function Show() {
 
     // Refs
     const audioRef = useRef(new Audio());
+    if (audioRef.current) {
+        audioRef.current.crossOrigin = "anonymous";
+    }
 
     // 1. Fetch Lecture Data
     useEffect(() => {
@@ -70,6 +73,7 @@ function Show() {
                 : '/sample.mp3';
 
             if (audioUrl) {
+                console.log("▶️ Playing Audio:", audioUrl);
                 audioRef.current.src = audioUrl;
                 audioRef.current.addEventListener('ended', handleAudioEnd);
 
@@ -124,6 +128,8 @@ function Show() {
         }
     };
 
+    const [isStarted, setIsStarted] = useState(false);
+
     if (loading) {
         return (
             <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">
@@ -131,6 +137,29 @@ function Show() {
                 <span className="text-xl ml-4 font-semibold">Loading Lecture Room...</span>
             </div>
         );
+    }
+
+    if (!isStarted) {
+        return (
+            <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white p-8 text-center">
+                <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                    {lectureData?.lecture_title || "Lecture Ready"}
+                </h1>
+                <p className="text-xl text-slate-400 mb-12 max-w-2xl">
+                    Your AI teacher is ready. Click below to enter the classroom and start the session.
+                </p>
+                <button
+                    onClick={() => {
+                        setIsStarted(true);
+                        setIsPlaying(true);
+                    }}
+                    className="group relative px-8 py-4 bg-blue-600 hover:bg-blue-500 rounded-full text-xl font-bold transition-all hover:scale-105 shadow-[0_0_40px_-10px_rgba(37,99,235,0.5)] flex items-center gap-3"
+                >
+                    <Play className="w-6 h-6 fill-current" />
+                    Start Class
+                </button>
+            </div>
+        )
     }
 
     return (

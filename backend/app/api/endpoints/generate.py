@@ -84,7 +84,7 @@ async def generate_lecture(request: GenerateRequest):
     for i, slide in enumerate(slides):
         script = slide.get("script", "")
         if script:
-            audio_filename = f"{lecture_id}_slide_{i+1}.wav"
+            audio_filename = f"{lecture_id}_slide_{i+1}.mp3"
             # tts_service returns (path, duration)
             try:
                 path, duration = tts_service.generate_audio(script, audio_filename)
