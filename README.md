@@ -1,71 +1,126 @@
-# 🎓 AI Guruji - The AI Teacher System
+<div align="center">
 
-**AI Guruji** is an advanced AI-powered educational platform that automatically converts PDF documents into professional, long-form video lectures. It uses a "Teacher Avatar," narrated speech, and dynamically generated slides to teach complex topics just like a real professor.
+# 🎓 AI Guruji
+### *The Next-Gen AI Teacher System*
 
-![AI Guruji Banner](https://via.placeholder.com/800x200?text=AI+Guruji+Platform)
+![AI Guruji Banner](assets/banner.png)
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+*Turn static PDFs into dynamic, engaging video lectures with a virtual AI professor.*
+
+[View Demo](#) • [Report Bug](#) • [Request Feature](#)
+
+</div>
+
+---
+
+## 📖 Overview
+
+**AI Guruji** transforms the way we learn from documents. By leveraging cutting-edge LLMs, RAG pipelines, and digital avatar synthesis, it converts standard textbooks and research papers into **professional long-form video lectures**.
+
+Imagine uploading a complex physics paper and having a virtual professor explain it to you with perfect slides, pacing, and voice—that's AI Guruji.
 
 ## ✨ Key Features
 
-*   **📄 PDF to Lecture**: Upload any textbook or paper; the system understands it.
-*   **🧠 RAG Pipeline**: Uses Retrieval-Augmented Generation to ensure factual accuracy based *only* on the source document.
-*   **🗣️ Professional Narration**: Uses **Coqui TTS** for calm, paced, teacher-style voice synthesis.
-*   **📊 Auto-Slide Generation**: Creates HTML/CSS-based slides using **Playwright** that perfectly match the script.
-*   **🤖 AI Avatar (Wav2Lip)**: Syncs the audio to a video avatar for a realistic classroom experience.
-*   **🎼 Orchestrated Playback**: A React-based player that syncs slides and audio automatically.
+| Feature | Description |
+| :--- | :--- |
+| **📄 PDF to Lecture** | Upload any PDF; the system parses, understands, and structures a lecture around it. |
+| **🧠 Intelligent RAG** | **Retrieval-Augmented Generation** ensures every word spoken is factually grounded in your source text. |
+| **🗣️ Pro Narration** | Calm, paced, and realistic voice synthesis using **Coqui TTS**. |
+| **📊 Dynamic Slides** | Automatically generates beautiful HTML/CSS slides via **Playwright**, synced perfectly to the script. |
+| **🤖 Virtual Avatar** | A lifelike **Wav2Lip** avatar that speaks your content, creating a connection just like a real teacher. |
+| **🎼 Smart Player** | A custom **React** Orchestrator that handles the complex sync between video, slides, and audio. |
+
+---
+
+## 🏗️ Architecture
+
+<div align="center">
+  <img src="assets/Architecture.png" alt="Architecture Diagram" width="100%" />
+</div>
+
+<br>
 
 ## 🛠️ Tech Stack
 
-### Backend
-*   **Framework**: FastAPI (Python)
-*   **LLM**: Google Gemini Pro (via `google-generativeai`)
-*   **RAG**: FAISS + SentenceTransformers
-*   **Audio**: Coqui TTS
-*   **Vision**: Wav2Lip (Lip Sync), Playwright (Slide Rendering)
+### 🔙 Backend
+*   **Core**: `FastAPI` (Python)
+*   **LLM**: `Google Gemini Pro`
+*   **RAG Engine**: `FAISS` + `SentenceTransformers`
+*   **Audio**: `Coqui TTS`
+*   **Visuals**: `Wav2Lip` (Lip Sync), `Playwright` (Slide Rendering)
 
-### Frontend
-*   **Framework**: React (Vite)
-*   **Styling**: Tailwind CSS
-*   **UI**: Glassmorphism Design, Lucide Icons
+### 🎨 Frontend
+*   **Framework**: `React` (Vite)
+*   **Styling**: `Tailwind CSS`
+*   **UI/UX**: `Glassmorphism`, `Lucide Icons`
+
+---
 
 ## 🚀 Getting Started
 
-For detailed installation and run instructions, please see the **[Setup Guide](README_SETUP.md)**.
+Ready to build your own AI Teacher? Follow these steps. For a deep dive, check the [**Setup Guide**](README_SETUP.md).
 
-### Quick Start
-1.  **Configure**: Rename `backend/.env.example` to `backend/.env` and add your `GEMINI_API_KEY`.
-2.  **Backend**:
-    ```bash
-    cd backend
-    pip install -r requirements.txt
-    uvicorn app.main:app --reload
-    ```
-3.  **Frontend**:
-    ```bash
-    cd frontend
-    npm install
-    npm run dev
-    ```
+### 1️⃣ Configuration
+Rename the environment file:
+```bash
+mv backend/.env.example backend/.env
+# Add your GEMINI_API_KEY in the file
+```
+
+### 2️⃣ Backend Setup
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+### 3️⃣ Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
 
 ## 📂 Project Structure
 
-```
+```bash
 AI_Guruji/
-├── backend/
-│   ├── app/
-│   │   ├── api/          # Endpoints (Upload, Generate)
-│   │   ├── services/     # Core Logic (RAG, TTS, Slides, Orchestrator)
-│   │   └── core/         # Prompts & Config
-│   └── data/             # Stores output media and vector DBs
-├── frontend/
-│   ├── src/
-│   │   ├── components/   # Player & UI Components
-│   │   └── App.jsx       # Main Application
-└── implementation_plan.md
+├── 📂 backend/
+│   ├── 📂 app/
+│   │   ├── 📂 api/          # 🔌 Endpoints (Upload, Generate)
+│   │   ├── 📂 services/     # ⚙️ Core Logic (RAG, TTS, Slides)
+│   │   └── 📂 core/         # 🧠 Prompts & Config
+│   └── 📂 data/             # 💾 Stores output media & vector DBs
+├── 📂 frontend/
+│   ├── 📂 src/
+│   │   ├── 📂 components/   # 🧩 Player & UI Components
+│   │   └── ⚛️ App.jsx       # 📱 Main Application
+└── 📜 implementation_plan.md
 ```
 
-## ⚠️ Notes
-*   **Avatar Generation**: Requires `wav2lip_gan.pth` weights and a GPU. See `README_AVATAR.md` for details.
-*   **Time Control**: The system automatically calculates audio duration to sync slides perfectly.
+## ⚠️ Important Notes
+
+> **Avatar Generation**: High-quality lip-sync requires a GPU and `wav2lip_gan.pth` weights. Please verify your hardware capabilities in `README_AVATAR.md`.
+
+> **Time Synchronization**: The system is designed to auto-calculate audio durations to ensure slides transition at the exact right moment.
 
 ---
-Built with ❤️ by the AI Guruji Team.
+
+<div align="center">
+
+## 📜 License
+This project is protected under the **MIT License**. View the [LICENSE](LICENSE) file for more information.
+
+<br>
+
+Made with ❤️ by the **AI Guruji Team (lead by Kaushal Jindal)**
+
+</div>
