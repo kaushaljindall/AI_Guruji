@@ -16,11 +16,11 @@ class LLMService:
     def __init__(self):
         # --- HARDCODE SECTION ---
         # Paste your key inside the quotes below to bypass .env issues
-        self.HARDCODED_GEMINI_KEY = "" # e.g. "AIzaSy..."
+        self.HARDCODED_GEMINI_KEY = None
         
         # 1. Explicitly load .env from backend root
         from pathlib import Path
-        env_path = Path(os.getcwd()) / '.env'
+        env_path = Path(__file__).resolve().parent.parent.parent / '.env'
         load_dotenv(dotenv_path=env_path)
         
         # 2. Load Keys (Prioritize Hardcoded if set)
