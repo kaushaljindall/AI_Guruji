@@ -13,7 +13,7 @@
 
 *Turn static PDFs into dynamic, engaging video lectures with a virtual AI professor.*
 
-[View Demo](#) • [Report Bug](#) • [Request Feature](#)
+<!-- [View Demo](#) • [Report Bug](#) • [Request Feature](#) -->
 
 </div>
 
@@ -29,12 +29,12 @@ Imagine uploading a complex physics paper and having a virtual professor explain
 
 | Feature | Description |
 | :--- | :--- |
-| **📄 PDF to Lecture** | Upload any PDF; the system parses, understands, and structures a lecture around it. |
-| **🧠 Intelligent RAG** | **Retrieval-Augmented Generation** ensures every word spoken is factually grounded in your source text. |
-| **🗣️ Pro Narration** | Calm, paced, and realistic voice synthesis using **Coqui TTS**. |
-| **📊 Dynamic Slides** | Automatically generates beautiful HTML/CSS slides via **Playwright**, synced perfectly to the script. |
-| **🤖 Virtual Avatar** | A lifelike **Wav2Lip** avatar that speaks your content, creating a connection just like a real teacher. |
-| **🎼 Smart Player** | A custom **React** Orchestrator that handles the complex sync between video, slides, and audio. |
+| **PDF to Lecture** | Upload any PDF; the system parses, understands, and structures a lecture around it. |
+| **Intelligent RAG** | **Retrieval-Augmented Generation** ensures every word spoken is factually grounded in your source text. |
+| **Pro Narration** | Calm, paced, and realistic voice synthesis using **Coqui TTS**. |
+| **Dynamic Slides** | Automatically generates beautiful HTML/CSS slides via **Playwright**, synced perfectly to the script. |
+| **Virtual Avatar** | A lifelike **Wav2Lip** avatar that speaks your content, creating a connection just like a real teacher. |
+| **Smart Player** | A custom **React** Orchestrator that handles the complex sync between video, slides, and audio. |
 
 ---
 
@@ -48,39 +48,39 @@ Imagine uploading a complex physics paper and having a virtual professor explain
 
 ## 🛠️ Tech Stack
 
-### 🔙 Backend
+### Backend
 *   **Core**: `FastAPI` (Python)
 *   **LLM**: `Google Gemini Pro`
 *   **RAG Engine**: `FAISS` + `SentenceTransformers`
 *   **Audio**: `Coqui TTS`
 *   **Visuals**: `Wav2Lip` (Lip Sync), `Playwright` (Slide Rendering)
 
-### 🎨 Frontend
+### Frontend
 *   **Framework**: `React` (Vite)
 *   **Styling**: `Tailwind CSS`
 *   **UI/UX**: `Glassmorphism`, `Lucide Icons`
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 Ready to build your own AI Teacher? Follow these steps. For a deep dive, check the [**Setup Guide**](README_SETUP.md).
 
-### 1️⃣ Configuration
+### Configuration
 Rename the environment file:
 ```bash
 mv backend/.env.example backend/.env
 # Add your GEMINI_API_KEY in the file
 ```
 
-### 2️⃣ Backend Setup
+### Backend Setup
 ```bash
 cd backend
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-### 3️⃣ Frontend Setup
+### Frontend Setup
 ```bash
 cd frontend
 npm install
@@ -89,7 +89,7 @@ npm run dev
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```bash
 AI_Guruji/
@@ -108,7 +108,7 @@ AI_Guruji/
 
 ## ⚠️ Important Notes
 
-> **Avatar Generation**: High-quality lip-sync requires a GPU and `wav2lip_gan.pth` weights. Please verify your hardware capabilities in `README_AVATAR.md`.
+> **Avatar Generation**: High-quality lip-sync requires a GPU and `wav2lip_gan.pth` weights. Please verify your hardware capabilities in [**README_AVATAR.md**](README_AVATAR.md).
 
 > **Time Synchronization**: The system is designed to auto-calculate audio durations to ensure slides transition at the exact right moment.
 
