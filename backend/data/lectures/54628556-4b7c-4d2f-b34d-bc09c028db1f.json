@@ -1,0 +1,185 @@
+{
+  "lecture_title": "Fundamentals of Programming: Data, Control, Arrays & Design",
+  "slides": [
+    {
+      "heading": "Welcome to Programming Fundamentals",
+      "summary": "This lecture will introduce core programming concepts, including data types, variables, control structures, loops, arrays, and principles of good program design.",
+      "important_points": [
+        "Understanding foundational programming concepts.",
+        "Learning about data representation and manipulation.",
+        "Exploring how programs make decisions and repeat actions.",
+        "Introduction to organizing data and structuring code."
+      ],
+      "script": "Hello everyone, and welcome to this introductory lecture on programming fundamentals. Today, we will embark on a journey to understand the basic building blocks of any computer program. We'll cover essential topics such as how computers store and handle different types of data, how we define variables and constants, and how we perform operations using various operators. We will then move into the exciting world of control structures, which allow our programs to make decisions and repeat actions, making them powerful and dynamic. Finally, we'll explore arrays for organizing data and discuss the critical principles of good program design, ensuring our code is not only functional but also clear and maintainable. Now, let us begin our exploration of these fundamental concepts.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_1.mp3",
+      "duration_seconds": 47.232,
+      "slide_id": 1
+    },
+    {
+      "heading": "Data, Variables, and Constants",
+      "summary": "Understanding how data is stored, and the difference between variables (values that can change) and constants (values that do not change).",
+      "important_points": [
+        "Variables are named memory locations whose values can change.",
+        "Constants are named values that remain fixed.",
+        "Constants improve readability and maintainability, avoiding 'magic numbers'."
+      ],
+      "script": "Now, let us understand how programs handle data. We use two primary concepts: variables and constants. A variable is essentially a named memory location where we can store a value, and importantly, this value can change during the program's execution. Each variable has a name, a type, and a current value. For example, if we declare `age AS INTEGER`, and set it to 18, `age` is our variable. On the other hand, a constant is a named value that does not change throughout the program. A classic example is `CONST PI = 3.14159`. This is very important because using constants significantly improves code readability, makes our programs easier to maintain, and helps us avoid what we call 'magic numbers' \u2013 unexplained numerical values embedded directly in the code. Think of it like labeling your ingredients in a kitchen; it makes everything clearer.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_2.mp3",
+      "duration_seconds": 57.24,
+      "slide_id": 2
+    },
+    {
+      "heading": "Common Data Types, Assignment, and Operators",
+      "summary": "Exploring various data types, how to assign values to variables, and the different types of operators used in programming.",
+      "important_points": [
+        "Data types define the kind of data a variable can hold.",
+        "Assignment `variable \u2190 expression` stores results, not mathematical equality.",
+        "Operators perform arithmetic, relational, and logical operations.",
+        "Operator precedence dictates the order of operations; use parentheses for clarity."
+      ],
+      "script": "Moving on, let's look at the common data types that variables can hold. We have `INTEGER` for whole numbers like counts or indices, `REAL` for numbers with decimal points such as averages or salaries, `CHAR` for a single character like 'A', `STRING` for sequences of characters like 'Hello', and `BOOLEAN` for `TRUE` or `FALSE` values. Now, how do we put values into variables? This is done through assignment. We use the syntax `variable \u2190 expression`. This is not mathematical equality; instead, the right-hand side, the expression, is evaluated first, and its result is then stored in the variable on the left-hand side. It's crucial to initialize variables before using them, for example, `sum \u2190 0`. Next, programs use operators to perform calculations and comparisons. We have arithmetic operators like plus, minus, multiply, divide, and modulo. Relational operators compare values, such as less than, greater than, equal to, or not equal. And finally, logical operators like `NOT`, `AND`, and `OR` combine boolean conditions. This is very important: operators have a typical precedence, usually arithmetic operations first, then relational, then `NOT`, then `AND`, and finally `OR`. Always use parentheses to explicitly define the order of operations and ensure clarity.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_3.mp3",
+      "duration_seconds": 86.136,
+      "slide_id": 3
+    },
+    {
+      "heading": "Control Structures: Sequence & Selection",
+      "summary": "Introduction to the three basic control structures: sequence, selection, and loop. Focus on selection with different 'if' forms.",
+      "important_points": [
+        "Sequence: statements execute in order.",
+        "Selection (`if`): allows programs to make decisions.",
+        "Different `if` forms: simple `if`, `if-else`, `else-if` ladder.",
+        "Structured code uses only these three patterns, avoiding 'spaghetti code'."
+      ],
+      "script": "Now, let's delve into control structures, which dictate the flow of execution in a program. There are three basic structures. First, `sequence`, where statements simply execute one after another in the order they are written. Second, `selection`, which allows a program to make decisions based on certain conditions. And third, `loops`, which enable repetition. Let us focus on `selection` today. We have several forms of the `if` statement. A `simple if` executes code only if a condition is true, like `IF cond THEN ... END IF`. The `if-else` form provides an alternative path: `IF cond THEN ... ELSE ... END IF`. For multiple conditions, we use an `else-if ladder`. For example, to assign a grade based on marks: `IF marks >= 90 THEN grade \u2190 'A' ELSEIF marks >= 80 THEN grade \u2190 'B' ELSEIF marks >= 70 THEN grade \u2190 'C' ELSE grade \u2190 'D' END IF`. We can also check ranges or invalid conditions using logical operators. For example, `IF (x >= low) AND (x <= high) THEN ...` to check a range, or `IF (mark < 0) OR (mark > 100) THEN ...` to check for an invalid mark. It's crucial to use structured code, which means only using sequence, selection, and loops, properly nested. This helps avoid 'spaghetti code', which is hard to read and maintain due to many confusing jumps or `goto` statements.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_4.mp3",
+      "duration_seconds": 94.464,
+      "slide_id": 4
+    },
+    {
+      "heading": "Loops: Repetition in Programming",
+      "summary": "Understanding how loops (`while`, `for`) enable repetitive execution of code blocks and common pitfalls to avoid.",
+      "important_points": [
+        "Loops repeat a block of code based on a condition.",
+        "`WHILE` loops continue as long as a condition is true.",
+        "`FOR` loops are ideal for a known number of repetitions.",
+        "Common mistakes include infinite loops and 'off-by-one' errors."
+      ],
+      "script": "Next, let's explore loops, which are fundamental for repeating tasks in programming. The general pattern for any loop involves three parts: initializing a Loop Control Variable, or LCV; then, a `WHILE` condition checks if the loop should continue; and inside the loop body, we have the statements to be repeated, followed by updating the LCV to eventually change the condition. A `WHILE` loop continues to execute its body as long as its condition remains true. For example: `INITIALIZE LCV`, then `WHILE condition ... body ... UPDATE LCV END WHILE`. Another common loop is the `FOR` loop, which is often used when we know how many times we want to repeat something. For example: `FOR i \u2190 start TO end STEP stepValue ... body ... END FOR`. This is very important: there are common mistakes to avoid. These include failing to initialize the LCV, forgetting to update the LCV which leads to an infinite loop, or having 'off-by-one' errors, where the loop runs one too many or one too few times, often due to using `<` instead of `<=` or vice versa. Also, ensure the update direction aligns with your start and end conditions. A useful `WHILE` loop pattern is the priming input or sentinel loop, where an initial input 'primes' the loop, and subsequent inputs update the value, continuing until a special 'sentinel' value is entered. For example: `INPUT value WHILE value <> sentinel ... process value ... INPUT value END WHILE`.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_5.mp3",
+      "duration_seconds": 92.496,
+      "slide_id": 5
+    },
+    {
+      "heading": "Common Loop Tasks and Patterns",
+      "summary": "Demonstrating practical applications of loops for tasks like summing, counting, calculating factorials, and generating tables.",
+      "important_points": [
+        "Loops are essential for accumulating sums or counts.",
+        "Calculating factorials involves iterative multiplication within a loop.",
+        "Loops can generate patterned output, such as multiplication tables."
+      ],
+      "script": "Now that we understand how loops work, let us look at some common tasks where loops are indispensable. Loops are frequently used for accumulation, such as calculating a sum. For example, `sum \u2190 sum + term` inside a loop will add each term to the running total. Similarly, to count occurrences, we use `count \u2190 count + 1`. Another classic example is calculating a factorial, denoted as N!, which is the product of all positive integers up to N. We initialize `fact \u2190 1` and then multiply `fact` by `i` in a `FOR` loop from 1 to N. Finally, loops are perfect for generating patterned output, such as printing a multiplication table. Inside a loop, we can print `n * i` for different values of `i`. These examples illustrate the power and versatility of loops in solving repetitive computational problems. Understanding these patterns will greatly help you in building efficient programs.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_6.mp3",
+      "duration_seconds": 57.984,
+      "slide_id": 6
+    },
+    {
+      "heading": "Arrays: Organizing Data Collections",
+      "summary": "Introduction to arrays as fixed-size collections of elements of the same type, accessed by an index, and looping over 1D arrays.",
+      "important_points": [
+        "Arrays store multiple items of the same data type.",
+        "Elements are accessed using a numerical index.",
+        "Loops are critical for processing array elements efficiently."
+      ],
+      "script": "Let's move on to arrays, which are a very important data structure in programming. An array is defined as a fixed-size collection of elements, all of the same data type, and these elements are accessed by an index. Think of it like a series of numbered boxes, where each box can hold the same type of item. For example, `DECLARE marks[50] AS INTEGER` declares an array named `marks` that can hold 50 integer values. This is very important: arrays provide an efficient way to store and manage multiple related pieces of data under a single name. Now, to work with arrays, we almost always use loops. For example, to input values into a 1D array, we would use a `FOR` loop: `FOR i \u2190 1 TO n INPUT marks[i] END FOR`. Similarly, to process the elements, such as calculating their sum, we use another loop: `sum \u2190 0 FOR i \u2190 1 TO n sum \u2190 sum + marks[i] END FOR`. We can then calculate the average by dividing the `sum` by `n`. Loops make it incredibly easy to iterate through all elements of an array and perform operations on them.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_7.mp3",
+      "duration_seconds": 68.064,
+      "slide_id": 7
+    },
+    {
+      "heading": "Arrays: Searching, Swapping, and Sorting",
+      "summary": "Understanding how to search for elements in an array (linear search), swap values, and sort an array using Bubble Sort.",
+      "important_points": [
+        "Linear search checks each element sequentially.",
+        "Swapping involves using a temporary variable.",
+        "Bubble sort repeatedly compares and swaps adjacent elements to sort an array."
+      ],
+      "script": "Continuing with arrays, let's explore some common operations. First, `linear search` is a method to find a specific element, or 'target', within an array. We iterate through each element, comparing it to our target. If a match is found, we set a `found` flag to `TRUE`, record its position, and then exit the loop. For example: `found \u2190 FALSE FOR i \u2190 1 TO n IF arr[i] == target THEN found \u2190 TRUE pos \u2190 i EXIT FOR END IF END FOR`. Next, `swapping` two values is a very common operation, crucial for sorting. To swap values between two variables, say `a` and `b`, we need a temporary variable. The pattern is: `temp \u2190 a a \u2190 b b \u2190 temp`. This temporarily holds one value while the other is moved. Finally, let's look at `Bubble sort` for arranging elements in ascending order. This algorithm repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. This process is repeated until no more swaps are needed. Here's how it generally looks: `FOR i \u2190 1 TO n - 1 FOR j \u2190 1 TO n - i IF arr[j] > arr[j + 1] THEN temp \u2190 arr[j] arr[j] \u2190 arr[j + 1] arr[j + 1] \u2190 temp END IF END FOR END FOR`. This is very important to understand, as it's a foundational sorting algorithm.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_8.mp3",
+      "duration_seconds": 86.784,
+      "slide_id": 8
+    },
+    {
+      "heading": "Arrays: Two-Dimensional and Parallel Arrays",
+      "summary": "Extending array concepts to two-dimensional arrays for tabular data and parallel arrays for related data.",
+      "important_points": [
+        "2D arrays organize data in rows and columns.",
+        "Nested loops are used to process 2D arrays.",
+        "Parallel arrays link related data using the same index."
+      ],
+      "script": "Now, let's consider arrays that are a bit more complex. A `2D array` is like a grid or a table, with data organized into rows and columns. To input elements into a 2D array, we use nested `FOR` loops. The outer loop typically controls the rows, and the inner loop controls the columns. For example: `FOR i \u2190 1 TO rows FOR j \u2190 1 TO cols INPUT a[i][j] END FOR END FOR`. This structure allows us to systematically fill every cell in our 2D array. Another useful concept is `parallel arrays`. This is where we use multiple 1D arrays to store related data, with corresponding elements sharing the same index. For instance, if you have student names and their corresponding marks, you might have `names[i]` and `marks[i]`. Here, the student at index `i` in the `names` array has their mark stored at the same index `i` in the `marks` array. This is a simple yet effective way to manage related pieces of information that might be of different data types.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_9.mp3",
+      "duration_seconds": 62.64,
+      "slide_id": 9
+    },
+    {
+      "heading": "Modules, Top-Down Design, and Hierarchy Charts",
+      "summary": "Understanding modules (procedures/functions) for code organization, top-down design strategy, and visualizing program structure with hierarchy charts.",
+      "important_points": [
+        "Modules are self-contained units for specific tasks.",
+        "Procedures perform actions; functions return values.",
+        "Top-down design breaks problems into smaller, manageable subtasks.",
+        "Hierarchy charts visually represent module call structures."
+      ],
+      "script": "Let's shift our focus to how we structure and design larger programs. This is very important for creating complex yet manageable software. A `module` is a self-contained unit of code, such as a procedure or a function, designed to perform a single, specific task. A `procedure` executes a set of actions but does not return a value, while a `function` performs a task and returns a specific value. A key design strategy is `top-down design`. This approach involves starting with the main task and systematically breaking it down into smaller, more manageable subtasks, which then become our submodules, and so on, until we reach the smallest, most granular steps. To visualize this structure, we use a `hierarchy chart`. This chart shows the relationships between modules, illustrating which modules 'call' or use other modules, much like an organizational chart. It forms a tree-like structure, but importantly, it does not show loops or decision points within the modules themselves, only the call structure. For example, a `[Main]` module might call `[Input]`, `[Process]`, and `[Output]` modules, with `[Process]` further breaking down into `[CalcTotal]` and `[CalcAverage]`. This systematic approach helps in managing complexity and team collaboration.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_10.mp3",
+      "duration_seconds": 81.24,
+      "slide_id": 10
+    },
+    {
+      "heading": "Good Program Design: Key Qualities",
+      "summary": "Exploring essential qualities that define a well-designed program, contributing to its effectiveness, longevity, and ease of use.",
+      "important_points": [
+        "Modularity: High cohesion, low coupling for focused, independent units.",
+        "Readability: Clear, understandable code with meaningful names and formatting.",
+        "Maintainability: Easy to change, fix, and update.",
+        "Reliability & Robustness: Correct results, handles errors gracefully.",
+        "Efficiency: Optimal performance without wasting resources.",
+        "Reusability: Generic components usable in multiple contexts.",
+        "Simplicity, no redundancy: Clear logic, avoids repeated code."
+      ],
+      "script": "Now, let's discuss what makes for a truly well-designed program. These are the key qualities that professionals strive for. First, `modularity`, which means having high cohesion and low coupling. This implies that each module should have a single, well-defined purpose and be as independent as possible. Second, `readability`. This is about using meaningful names for variables and modules, proper indentation, and adding comments to make the code easy to understand for anyone, including yourself, in the future. Third, `maintainability`, meaning the program should be easy to change, fix bugs, or update with new features. Using constants and structured code greatly aids this. Fourth, `reliability and robustness`. A reliable program consistently produces correct results, while a robust one can handle unexpected or bad input without crashing. Fifth, `efficiency`. This means the program should perform its tasks within a reasonable time and use system resources effectively, often by choosing good algorithms. Sixth, `reusability`. Designing generic modules that can be used in different parts of the same program or even in entirely different projects is highly valuable. And finally, `simplicity and no redundancy`. This involves keeping the logic clear and avoiding repeated code. Adhering to these principles leads to high-quality, professional software.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_11.mp3",
+      "duration_seconds": 90.504,
+      "slide_id": 11
+    },
+    {
+      "heading": "Classic Small Program Patterns",
+      "summary": "Reviewing common programming patterns for solving everyday small problems, serving as practical examples of fundamental concepts.",
+      "important_points": [
+        "Calculating averages and areas involves basic arithmetic.",
+        "Factorial calculation uses a simple loop.",
+        "Reversing digits demonstrates modular arithmetic and iterative processing."
+      ],
+      "script": "To solidify our understanding, let us look at some classic small program patterns that illustrate the concepts we've discussed. These are common problems that you'll encounter. For example, to find the `average of three marks`, you simply input the three marks, sum them, and then divide by three. To calculate the `area of a circle`, you input the radius, use the constant PI, and apply the formula `PI * r * r`. Similarly, the `area of a rectangle` is `length * width`. A good example of a loop is calculating `Factorial N!`, where you initialize a `fact` variable to 1 and multiply it by each integer from 1 up to N in a `FOR` loop. Finally, `reversing digits` of a number is a slightly more complex but very illustrative pattern. You initialize `rev` to 0, and then in a `WHILE` loop, as long as `n` is greater than 0, you extract the last `digit` using the modulo operator, build the `rev` number by multiplying it by 10 and adding the digit, and then reduce `n` by integer division. These patterns are excellent practice for applying variables, operators, and control structures.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_12.mp3",
+      "duration_seconds": 70.248,
+      "slide_id": 12
+    },
+    {
+      "heading": "Lecture Recap and Next Steps",
+      "summary": "A quick summary of the key programming fundamentals covered today and encouragement for further practice and learning.",
+      "important_points": [
+        "We covered data, variables, constants, and operators.",
+        "We learned about control structures: sequence, selection, and loops.",
+        "Arrays for structured data storage were introduced, along with search and sort techniques.",
+        "Principles of good program design were highlighted.",
+        "Practice is key to mastering these concepts."
+      ],
+      "script": "Let us recap what we've covered in today's lecture. We started by understanding how programs handle `data`, distinguishing between `variables` whose values can change and `constants` whose values remain fixed. We explored `common data types`, understood the concept of `assignment`, and learned about `arithmetic, relational, and logical operators`, along with their `precedence`. Then, we delved into `control structures`, beginning with `sequence` and focusing on `selection` through various `if` forms. We extensively covered `loops`, including `while` and `for` loops, discussed common mistakes, and saw how loops are used for `summing, counting, and factorials`. We then moved to `arrays`, understanding their definition, how to loop over them, perform `linear searches`, `swapping`, and `bubble sort`, and explored `2D arrays` and `parallel arrays`. Finally, we discussed `modules`, `top-down design`, `hierarchy charts`, and the essential `qualities of good program design`. This is a lot of information, and it's very important to review this material and your notes. These fundamentals are the bedrock of all programming. I encourage you to practice these concepts with small programs. If you'd like, we can now test your understanding with some multiple-choice questions. Thank you for your attention.",
+      "audio_url": "/files/audio/54628556-4b7c-4d2f-b34d-bc09c028db1f_slide_13.mp3",
+      "duration_seconds": 79.656,
+      "slide_id": 13
+    }
+  ]
+}

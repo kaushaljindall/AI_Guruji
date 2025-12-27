@@ -39,7 +39,7 @@ class SlideService:
             title = slide.shapes.title
             subtitle = slide.placeholders[1]
             title.text = lecture_title
-            subtitle.text = "AI Guruji Lecture"
+            subtitle.text = "AI Guruji Lecture | By Kaushal Jindal"
 
             # 2. Content Slides
             bullet_slide_layout = prs.slide_layouts[1] 
